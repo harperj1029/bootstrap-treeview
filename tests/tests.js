@@ -488,7 +488,7 @@
 
     test('findNodes', function () {
         var $tree = init({ data: data });
-        var nodes = $tree.treeview('findNodes', ["4", null, "customId"]);
+        var nodes = $tree.treeview('findNodes', [4, null, "customId"]);
         ok((nodes instanceof Array), 'Result is an array');
         equal(nodes.length, 1, 'Correct number of nodes returned');
         equal(nodes[0].text, 'Grandchild 2', 'Correct node returned');

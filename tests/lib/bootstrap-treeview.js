@@ -406,7 +406,7 @@
 
 			// If multiSelect false, unselect previously selected
 			if (!this.options.multiSelect) {
-				$.each(this.findNodes('true', 'g', 'state.selected'), $.proxy(function (index, node) {
+				$.each(this.findNodes(true, 'g', 'state.selected'), $.proxy(function (index, node) {
 					this.setSelectedState(node, false, options);
 				}, this));
 			}
@@ -737,7 +737,7 @@
 		@returns {Array} nodes - Selected nodes
 	*/
 	Tree.prototype.getSelected = function () {
-		return this.findNodes('true', 'g', 'state.selected');
+		return this.findNodes(true, 'g', 'state.selected');
 	};
 
 	/**
@@ -745,7 +745,7 @@
 		@returns {Array} nodes - Unselected nodes
 	*/
 	Tree.prototype.getUnselected = function () {
-		return this.findNodes('false', 'g', 'state.selected');
+		return this.findNodes(false, 'g', 'state.selected');
 	};
 
 	/**
@@ -753,7 +753,7 @@
 		@returns {Array} nodes - Expanded nodes
 	*/
 	Tree.prototype.getExpanded = function () {
-		return this.findNodes('true', 'g', 'state.expanded');
+		return this.findNodes(true, 'g', 'state.expanded');
 	};
 
 	/**
@@ -761,7 +761,7 @@
 		@returns {Array} nodes - Collapsed nodes
 	*/
 	Tree.prototype.getCollapsed = function () {
-		return this.findNodes('false', 'g', 'state.expanded');
+		return this.findNodes(false, 'g', 'state.expanded');
 	};
 
 	/**
@@ -769,7 +769,7 @@
 		@returns {Array} nodes - Checked nodes
 	*/
 	Tree.prototype.getChecked = function () {
-		return this.findNodes('true', 'g', 'state.checked');
+		return this.findNodes(true, 'g', 'state.checked');
 	};
 
 	/**
@@ -777,7 +777,7 @@
 		@returns {Array} nodes - Unchecked nodes
 	*/
 	Tree.prototype.getUnchecked = function () {
-		return this.findNodes('false', 'g', 'state.checked');
+		return this.findNodes(false, 'g', 'state.checked');
 	};
 
 	/**
@@ -785,7 +785,7 @@
 		@returns {Array} nodes - Disabled nodes
 	*/
 	Tree.prototype.getDisabled = function () {
-		return this.findNodes('true', 'g', 'state.disabled');
+		return this.findNodes(true, 'g', 'state.disabled');
 	};
 
 	/**
@@ -793,7 +793,7 @@
 		@returns {Array} nodes - Enabled nodes
 	*/
 	Tree.prototype.getEnabled = function () {
-		return this.findNodes('false', 'g', 'state.disabled');
+		return this.findNodes(false, 'g', 'state.disabled');
 	};
 
 
@@ -842,7 +842,7 @@
 		@param {optional Object} options
 	*/
 	Tree.prototype.collapseAll = function (options) {
-		var identifiers = this.findNodes('true', 'g', 'state.expanded');
+		var identifiers = this.findNodes(true, 'g', 'state.expanded');
 		this.forEachIdentifier(identifiers, options, $.proxy(function (node, options) {
 			this.setExpandedState(node, false, options);
 		}, this));
@@ -874,7 +874,7 @@
 			this.expandLevels(this.tree, options.levels, options);
 		}
 		else {
-			var identifiers = this.findNodes('false', 'g', 'state.expanded');
+			var identifiers = this.findNodes(false, 'g', 'state.expanded');
 			this.forEachIdentifier(identifiers, options, $.proxy(function (node, options) {
 				this.setExpandedState(node, true, options);
 			}, this));
@@ -946,7 +946,7 @@
 		@param {optional Object} options
 	*/
 	Tree.prototype.checkAll = function (options) {
-		var identifiers = this.findNodes('false', 'g', 'state.checked');
+		var identifiers = this.findNodes(false, 'g', 'state.checked');
 		this.forEachIdentifier(identifiers, options, $.proxy(function (node, options) {
 			this.setCheckedState(node, true, options);
 		}, this));
@@ -972,7 +972,7 @@
 		@param {optional Object} options
 	*/
 	Tree.prototype.uncheckAll = function (options) {
-		var identifiers = this.findNodes('true', 'g', 'state.checked');
+		var identifiers = this.findNodes(true, 'g', 'state.checked');
 		this.forEachIdentifier(identifiers, options, $.proxy(function (node, options) {
 			this.setCheckedState(node, false, options);
 		}, this));
@@ -1012,7 +1012,7 @@
 		@param {optional Object} options
 	*/
 	Tree.prototype.disableAll = function (options) {
-		var identifiers = this.findNodes('false', 'g', 'state.disabled');
+		var identifiers = this.findNodes(false, 'g', 'state.disabled');
 		this.forEachIdentifier(identifiers, options, $.proxy(function (node, options) {
 			this.setDisabledState(node, true, options);
 		}, this));
@@ -1038,7 +1038,7 @@
 		@param {optional Object} options
 	*/
 	Tree.prototype.enableAll = function (options) {
-		var identifiers = this.findNodes('true', 'g', 'state.disabled');
+		var identifiers = this.findNodes(true, 'g', 'state.disabled');
 		this.forEachIdentifier(identifiers, options, $.proxy(function (node, options) {
 			this.setDisabledState(node, false, options);
 		}, this));
@@ -1152,7 +1152,7 @@
 
 		options = $.extend({}, { render: true }, options);
 
-		var results = $.each(this.findNodes('true', 'g', 'searchResult'), function (index, node) {
+		var results = $.each(this.findNodes(true, 'g', 'searchResult'), function (index, node) {
 			node.searchResult = false;
 		});
 
@@ -1165,21 +1165,23 @@
 
 	/**
 		Find nodes that match a given criteria
-		@param {String} pattern - A given string to match against
+		@param {Object} search - Can be a regular expression search pattern or a literal value to compare.
 		@param {optional String} modifier - Valid RegEx modifiers
-		@param {optional String} attribute - Attribute to compare pattern against
+		@param {optional String} attributeName - Attribute name to compare pattern against
 		@return {Array} nodes - Nodes that match your criteria
 	*/
-	Tree.prototype.findNodes = function (pattern, modifier, attribute) {
+    Tree.prototype.findNodes = function (search, modifier, attributeName) {
 
 		modifier = modifier || 'g';
-		attribute = attribute || 'text';
+        attributeName = attributeName || 'text';
 
 		var _this = this;
 		return $.grep(this.nodes, function (node) {
-			var val = _this.getNodeValue(node, attribute);
+            var val = _this.getNodeValue(node, attributeName);
             if (typeof val === 'string') {
-                return val.match(new RegExp(pattern, modifier));
+                return val.match(new RegExp(search, modifier));
+            } else {
+                return val === search;
             }
 		});
 	};
@@ -1200,7 +1202,7 @@
 		}
 		else {
 			if (obj.hasOwnProperty(attr)) {
-				return obj[attr].toString();
+				return obj[attr];
 			}
 			else {
 				return undefined;
