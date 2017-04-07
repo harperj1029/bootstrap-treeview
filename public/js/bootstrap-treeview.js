@@ -101,6 +101,7 @@
 			remove: $.proxy(this.remove, this),
 
 			// Get methods
+            findNodes: $.proxy(this.findNodes, this),
 			getNode: $.proxy(this.getNode, this),
 			getParent: $.proxy(this.getParent, this),
 			getSiblings: $.proxy(this.getSiblings, this),
@@ -1177,9 +1178,9 @@
 		var _this = this;
 		return $.grep(this.nodes, function (node) {
 			var val = _this.getNodeValue(node, attribute);
-			if (typeof val === 'string') {
-				return val.match(new RegExp(pattern, modifier));
-			}
+            if (typeof val === 'string') {
+                return val.match(new RegExp(pattern, modifier));
+            }
 		});
 	};
 

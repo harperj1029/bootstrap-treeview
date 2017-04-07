@@ -14,35 +14,44 @@
 
 	var data = [
 		{
-			text: 'Parent 1',
+            text: 'Parent 1',
+            customId: 1,
 			nodes: [
 				{
-					text: 'Child 1',
+                    text: 'Child 1',
+                    customId: 2,
 					nodes: [
 						{
-							text: 'Grandchild 1'
+                            text: 'Grandchild 1',
+                            customId: 3,
 						},
 						{
-							text: 'Grandchild 2'
+                            text: 'Grandchild 2',
+                            customId: 4
 						}
 					]
 				},
 				{
-					text: 'Child 2'
+                    text: 'Child 2',
+                    customId: 5
 				}
 			]
 		},
 		{
-			text: 'Parent 2'
+            text: 'Parent 2',
+            customId: 6
 		},
 		{
-			text: 'Parent 3'
+            text: 'Parent 3',
+            customId: 7
 		},
 		{
-			text: 'Parent 4'
+            text: 'Parent 4',
+            customId: 8
 		},
 		{
-			text: 'Parent 5'
+            text: 'Parent 5',
+            customId: 9
 		}
 	];
 
@@ -476,6 +485,14 @@
 
 
 	module('Methods');
+
+    test('findNodes', function () {
+        var $tree = init({ data: data });
+        var nodes = $tree.treeview('findNodes', ["4", null, "customId"]);
+        ok((nodes instanceof Array), 'Result is an array');
+        equal(nodes.length, 1, 'Correct number of nodes returned');
+        equal(nodes[0].text, 'Grandchild 2', 'Correct node returned');
+    });
 
 	test('getNode', function () {
 		var $tree = init({ data: data });
