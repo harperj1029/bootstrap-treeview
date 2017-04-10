@@ -100,8 +100,7 @@
 			init: $.proxy(this.init, this),
 			remove: $.proxy(this.remove, this),
 
-			// Get methods
-            findNodes: $.proxy(this.findNodes, this),
+			// Get methods            
 			getNode: $.proxy(this.getNode, this),
 			getParent: $.proxy(this.getParent, this),
 			getSiblings: $.proxy(this.getSiblings, this),
@@ -112,7 +111,11 @@
 			getChecked: $.proxy(this.getChecked, this),
 			getUnchecked: $.proxy(this.getUnchecked, this),
 			getDisabled: $.proxy(this.getDisabled, this),
-			getEnabled: $.proxy(this.getEnabled, this),
+            getEnabled: $.proxy(this.getEnabled, this),
+
+            // Find methods
+            findNodes: $.proxy(this.findNodes, this),
+            findElement: $.proxy(this.findElement, this),
 
 			// Select methods
 			selectNode: $.proxy(this.selectNode, this),
@@ -357,7 +360,12 @@
 			console.log('Error: node does not exist');
 		}
 		return node;
-	};
+    };
+
+    Tree.prototype.findElement = function (identifier) {
+        var nodeId = this.identifyNode(identifier).nodeId;
+        return this.$element.find('[data-nodeid="' + nodeId + '"]');
+    };
 
 	Tree.prototype.toggleExpandedState = function (node, options) {
 		if (!node) return;
@@ -643,10 +651,12 @@
 			if (this.options.searchResultBackColor) {
 				backColor = this.options.searchResultBackColor;
 			}
-		}
+        }
 
-		return 'color:' + color +
-			';background-color:' + backColor + ';';
+        if (!color && !backColor) {
+            return null;
+        }
+        return (!!color ? 'color: ' + color + ';' : '') + (!!backColor ? 'background-color: ' + backColor + ';' : '');
 	};
 
 	// Add inline style into head

@@ -211,7 +211,31 @@
 		init({enableLinks:true, data:data});
 		ok($('.list-group-item:first').children('a').length, 'Links are enabled');
 
-	});
+    });
+
+    function colorToHex(color) {
+        if (color.substr(0, 1) === '#') {
+            return color;
+        }
+        var digits = /(.*?)rgb\((\d+), (\d+), (\d+)\)/.exec(color);
+
+        var red = parseInt(digits[2]);
+        var green = parseInt(digits[3]);
+        var blue = parseInt(digits[4]);
+
+        var rgb = blue | (green << 8) | (red << 16);
+        return digits[1] + '#' + rgb.toString(16);
+    };
+
+    test('Style overrides', function () {
+        var dataClone = $.extend({}, data);
+        data[0].color = "#4286f4";
+        data[0].backColor = "#4286f4";
+        init({ enableLinks: true, data: dataClone });
+
+        equal(colorToHex($('.list-group-item:first').css('color')), '#4286f4', 'Color style override applied');
+        equal(colorToHex($('.list-group-item:first').css('backgroundColor')), '#4286f4', 'Background color style override applied');
+    });
 
 
 	module('Data');
@@ -887,6 +911,13 @@
 		// Check events fire
 		ok(cbWorked, 'onSearchCleared function was called');
 		ok(onWorked, 'searchCleared was fired');
-	});
+    });
+
+    test('findElement', function () {
+        var $tree = init({ data: data });
+        var $element = $tree.treeview('findElement', 1);
+     
+        ok((!!$element && $element.length > 0), 'Element was found');       
+    });
 
 }());
