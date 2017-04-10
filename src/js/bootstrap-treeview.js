@@ -521,7 +521,7 @@
 		$.each(nodes, function addNodes(id, node) {
 
 			var treeItem = $(_this.template.item)
-				.addClass('node-' + _this.elementId)
+                .addClass(_this.elementId ? 'node-' + _this.elementId : '')
 				.addClass(node.state.checked ? 'node-checked' : '')
 				.addClass(node.state.disabled ? 'node-disabled': '')
 				.addClass(node.state.selected ? 'node-selected' : '')
