@@ -52,6 +52,8 @@
         searchResultBackColor: undefined, //'#FFFFFF',
 
         enableLinks: false,
+        linksOpenInNewWindow: false,
+        preventLinkClickBubble: false,
         highlightSelected: true,
         highlightSearchResults: true,
         showBorder: true,
@@ -323,6 +325,10 @@
 
         if (!this.options.enableLinks) event.preventDefault();
 
+        if(event.target.tagName.toLowerCase() === "a" && event.target.href && this.options.preventLinkClickBubble){
+            return true;
+        }
+
         var target = $(event.target);
         var node = this.findNode(target);
         if (!node || node.state.disabled) return;
@@ -524,9 +530,10 @@
             var treeItem = $(_this.template.item)
                 .addClass(_this.elementId ? 'node-' + _this.elementId : '')
                 .addClass('node-level-' + level)
+                .addClass(node.nodes ? 'parent-node' : '')
                 .addClass(node.state.checked ? 'node-checked' : '')
                 .addClass(node.state.disabled ? 'node-disabled' : '')
-                .addClass(node.state.selected ? 'node-selected' : '')
+                .addClass(node.state.selected ? 'node-selected active' : '')
                 .addClass(node.searchResult ? 'search-result' : '')
                 .addClass(_this.options.nodeClasses || '')
                 .attr('data-nodeid', node.nodeId)
@@ -594,13 +601,15 @@
             }
 
             // Add text
-            if (_this.options.enableLinks) {
+            if (_this.options.enableLinks && node.href) {
                 // Add hyperlink
-                treeItem
-                    .append($(_this.template.link)
-                        .attr('href', node.href)
-                        .append(node.text)
-                    );
+                var link = $(_this.template.link)
+                    .attr('href', node.href)
+                    .append(node.text);
+                if(_this.options.linksOpenInNewWindow){
+                    link.attr('target', '_blank');
+                }
+                treeItem.append(link);
             }
             else {
                 // otherwise just text                
@@ -707,8 +716,8 @@
         item: '<li class="list-group-item"></li>',
         indent: '<span class="indent"></span>',
         icon: '<span class="icon"></span>',
-        link: '<a class="node-text" href="#" style="color:inherit;"></a>',
-        text: '<span class="node-text"></span',
+        link: '<a class="node-text" href="#" style="color:inherit;text-decoration: underline;"></a>',
+        text: '<span class="node-text"></span>',
         badge: '<span class="badge"></span>'
     };
 
